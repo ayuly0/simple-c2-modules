@@ -78,7 +78,7 @@ def main():
         mkdir build && cd build
         cmake ..
         make
-        ./ {prog}
+        ./{prog}
         ```
 
         ## Description
