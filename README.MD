@@ -53,7 +53,9 @@ Please follow this flow:
 ---
 
 ## 📄 License
+
 This project is licensed under the [MIT License](LICENSE).
+
 ---
 
 ## 🏁 Next Step
