@@ -92,9 +92,8 @@ def main():
         ## Build & Run
 
         ```bash
-        mkdir build && cd build
         make
-        .\\{prog}.exe
+        .\\build\\{prog}.exe
         ```
 
         ## Description
