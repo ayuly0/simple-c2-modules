@@ -6,11 +6,10 @@ Resolver Windows Api from PEB
 
 ```bash
 mkdir build && cd build
-cmake ..
 make
-.\main.exe
+.\build\PEB-based-API-Resolver.exe
 ```
 
 ## Description
 
-`main` is the core executable of the `PEB-based-API-Resolver` project.
+`None`

@@ -52,7 +52,7 @@ def main():
 		CFLAGS  := -O2 -Wall
 		SRC_DIR := src
 		BUILD   := build
-		OUT     := $(BUILD)/{proj}.exe
+		OUT     := $(BUILD)/{prog}.exe
 
 		C_SRCS  := $(wildcard $(SRC_DIR)/*.c)
 		CPP_SRCS:= $(wildcard $(SRC_DIR)/*.cpp)
@@ -93,9 +93,8 @@ def main():
 
         ```bash
         mkdir build && cd build
-        cmake ..
         make
-        .\\{prog}.exe
+        .\\build\\{prog}.exe
         ```
 
         ## Description
