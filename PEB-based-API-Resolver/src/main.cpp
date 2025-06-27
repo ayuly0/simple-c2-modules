@@ -1,6 +1,3 @@
-#include <iostream>
+#include "win32.h"
 
-int main() {
-    std::cout << "Hello from main!" << std::endl;
-    return 0;
-}
+int main() { return 0; }
