@@ -93,6 +93,50 @@ PVOID LdrModuleLoad( IN LPSTR Module )
 {
 }
 
-PVOID LdrFunction( IN PVOID lpModule, IN LPWSTR Module )
+PVOID LdrFunction( IN PVOID pModule, IN LPWSTR pFunctionName )
 {
+    if ( !pModule || !pFunctionName )
+    {
+        return NULL;
+    }
+
+    PIMAGE_NT_HEADERS NtHeader = ( PIMAGE_NT_HEADERS )( ( PBYTE )pModule + ( ( PIMAGE_DOS_HEADER )pModule )->e_lfanew );
+    PIMAGE_EXPORT_DIRECTORY ExpDirectory =
+        ( PIMAGE_EXPORT_DIRECTORY )( ( PBYTE )pModule +
+                                     NtHeader->OptionalHeader.DataDirectory[ IMAGE_DIRECTORY_ENTRY_EXPORT ]
+                                         .VirtualAddress );
+    SIZE_T ExpDirectorySize =
+        ( SIZE_T )( ( PBYTE )pModule + NtHeader->OptionalHeader.DataDirectory[ IMAGE_DIRECTORY_ENTRY_EXPORT ].Size );
+    PDWORD AddrOfNames       = ( PDWORD )( ( PBYTE )pModule + ExpDirectory->AddressOfNames );
+    PDWORD AddrOfFuncs       = ( PDWORD )( ( PBYTE )pModule + ExpDirectory->AddressOfFunctions );
+    PWORD AddrOfNameOrdinals = ( PWORD )( ( PBYTE )pModule + ExpDirectory->AddressOfNameOrdinals );
+    PDWORD FunctionName      = { 0 };
+    PVOID FunctionAddr       = { 0 };
+
+    INT index = LookupExport( pModule, AddrOfNames, ExpDirectory->NumberOfNames, ( PDWORD )pFunctionName );
+
+    if ( index == -1 )
+    {
+        return NULL;
+    }
+
+    FunctionName = ( PDWORD )( ( PBYTE )pModule + AddrOfNames[ index ] );
+    FunctionAddr = ( PVOID )( ( PBYTE )pModule + AddrOfFuncs[ ( WORD )AddrOfNameOrdinals[ index ] ] );
+
+    if ( ( ULONG_PTR )FunctionAddr < ( ULONG_PTR )ExpDirectory &&
+         ( ULONG_PTR )FunctionAddr >= ( ULONG_PTR )ExpDirectory + ExpDirectorySize )
+    {
+        ANSI_STRING AnsiStr   = { 0 };
+        AnsiStr.Length        = StrLenA( ( LPCSTR )FunctionName );
+        AnsiStr.MaximumLength = AnsiStr.Length + sizeof( CHAR );
+        AnsiStr.Buffer        = ( PCHAR )FunctionName;
+
+        t_LdrGetProcedureAddress _LdrGetProcedureAddress = ( t_LdrGetProcedureAddress )FunctionAddr;
+        if ( !NT_SUCCESS( _LdrGetProcedureAddress( pModule, &AnsiStr, 0, &FunctionAddr ) ) )
+        {
+            return NULL;
+        }
+    }
+
+    return FunctionAddr;
 }

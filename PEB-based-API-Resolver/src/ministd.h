@@ -9,6 +9,10 @@
 #define MemSet          __stosb
 #define MemZero( p, l ) __stosb( p, 0, l )
 
+SIZE_T StrLenA( IN LPCSTR );
+
+SIZE_T StrLenW( IN LPCWSTR );
+
 INT StrCmp( IN PVOID, IN PVOID );
 
 INT StrCmpA( IN LPCSTR, IN LPCSTR );

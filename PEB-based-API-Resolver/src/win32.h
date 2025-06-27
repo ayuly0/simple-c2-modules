@@ -23,6 +23,6 @@ PVOID LdrModulePeb( IN LPWSTR Module );
 
 PVOID LdrModuleLoad( IN LPSTR Module );
 
-PVOID LdrFunction( IN PVOID lpModule, IN LPWSTR Module );
+PVOID LdrFunction( IN PVOID pModule, IN LPWSTR Module );
 
 #endif // !WIN32_H
