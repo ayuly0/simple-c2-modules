@@ -7,7 +7,7 @@ Resolver Windows Api from PEB
 ```bash
 mkdir build && cd build
 make
-.\build\PEB-based-API-Resolver.exe
+.\PEB-based-API-Resolver.exe
 ```
 
 ## Description
