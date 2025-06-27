@@ -8,7 +8,7 @@ Resolver Windows Api from PEB
 mkdir build && cd build
 cmake ..
 make
-./main
+.\main.exe
 ```
 
 ## Description

@@ -26,8 +26,46 @@ INT LookupExport(IN LPVOID pModule, IN PDWORD pNames, IN DWORD nNames,
   return Mid;
 }
 
-VOID LdrModulePeb(IN LPWSTR Module) {}
+PVOID LdrModulePeb(IN LPWSTR Module) {
+  PPEB Peb = NULL;
+  PLDR_DATA_TABLE_ENTRY Ldr = NULL;
+  PLIST_ENTRY Hdr = NULL;
+  LPWSTR Name = {0};
+  ULONG Idx = 0;
 
-VOID LdrModuleLoad(IN LPSTR Module) {}
+  Name = HeapAlloc(NtProcessHeap(), HEAP_ZERO_MEMORY, MAX_PATH);
 
-VOID LdrFunction(IN PVOID lpModule, IN LPWSTR Module) {}
+  Peb = NtCurrentTeb()->ProcessEnvironmentBlock;
+  Hdr = &Peb->Ldr->InLoadOrderModuleList;
+
+  for (PLIST_ENTRY Ent = Hdr->Flink; Hdr != Ent; Ent = Ent->Flink) {
+    Ldr = C_PTR(Ent);
+    if (Ldr->BaseDllName.Length > 260)
+      return NULL;
+
+    MemCopy(Name, Ldr->BaseDllName.Buffer, Ldr->BaseDllName.Length);
+    do {
+      if (Idx < Ldr->BaseDllName.Length) {
+        if (Name[Idx] >= 'a')
+          Name[Idx] -= 0x20;
+      } else
+        break;
+    } while (1);
+    Idx = 0;
+
+    if ((StrCmpW(Name, Module) == 0) || Module == NULL)
+      return Ldr->DllBase;
+
+    MemZero(Name, MAX_PATH);
+  }
+
+  if (Name) {
+    MemZero(Name, MAX_PATH);
+    Name = NULL;
+  }
+  return NULL;
+}
+
+PVOID LdrModuleLoad(IN LPSTR Module) {}
+
+PVOID LdrFunction(IN PVOID lpModule, IN LPWSTR Module) {}

@@ -1,6 +1,8 @@
 #ifndef WIN32_H
 #define WIN32_H
 
+#define WIN32_LEAN_AND_MEAN
+
 #include <windows.h>
 
 #include "native.h"
@@ -13,12 +15,14 @@
 
 #define NtProcessHeap() NtCurrentTeb()->ProcessEnvironmentBlock->ProcessHeap
 
+#define C_PTR( x ) ( ( LPVOID )x )
+
 INT LookupExport( IN LPVOID pModule, IN PDWORD pNames, IN DWORD nNames, IN PDWORD pFunctionName );
 
-VOID LdrModulePeb( IN LPWSTR Module );
+PVOID LdrModulePeb( IN LPWSTR Module );
 
-VOID LdrModuleLoad( IN LPSTR Module );
+PVOID LdrModuleLoad( IN LPSTR Module );
 
-VOID LdrFunction( IN PVOID lpModule, IN LPWSTR Module );
+PVOID LdrFunction( IN PVOID lpModule, IN LPWSTR Module );
 
 #endif // !WIN32_H

@@ -17574,12 +17574,12 @@ Audit_ObjectAccess_Registry and Audit_ObjectAccess_Handle must be enabled
 //        struct addrinfo *ai_next;
 //    } ADDRINFOA, *PADDRINFOA;
 
-    INT getaddrinfo(
-        IN OPTIONAL PCSTR pNodeName, IN OPTIONAL PCSTR pServiceName, IN OPTIONAL const ADDRINFOA *pHints,
-        OUT PADDRINFOA *ppResult
-    );
+    /*INT getaddrinfo(*/
+    /*    IN OPTIONAL PCSTR pNodeName, IN OPTIONAL PCSTR pServiceName, IN OPTIONAL const ADDRINFOA *pHints,*/
+    /*    OUT PADDRINFOA *ppResult*/
+    /*);*/
 
-    VOID freeaddrinfo( IN PADDRINFOA pAddrInfo );
+    /*VOID freeaddrinfo( IN PADDRINFOA pAddrInfo );*/
 
     typedef NTSTATUS( NTAPI *t_LdrGetProcedureAddress )(
         IN PVOID DllHandle, IN OPTIONAL PANSI_STRING ProcedureName, IN OPTIONAL ULONG ProcedureNumber,

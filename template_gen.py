@@ -6,7 +6,7 @@ Usage:
 This script creates:
 - <project_name>/
   - README.md
-  - CMakeLists.txt
+  - Makefile
   - src/<program_name>.cpp
 """
 
@@ -48,19 +48,36 @@ def main():
     # 2. Write CMakeLists.txt
     cmk = textwrap.dedent(
         f"""\
-		CC = x86_64-w64-mingw32-g++
-		CFLAGS = -O2 -Wall
-		SRC = src/{proj}.cpp
-		OUT = build/{proj}.exe
+		CC      := x86_64-w64-mingw32-gcc
+		CFLAGS  := -O2 -Wall
+		SRC_DIR := src
+		BUILD   := build
+		OUT     := $(BUILD)/{proj}.exe
 
+		C_SRCS  := $(wildcard $(SRC_DIR)/*.c)
+		CPP_SRCS:= $(wildcard $(SRC_DIR)/*.cpp)
+
+		C_OBJS   := $(patsubst $(SRC_DIR)/%.c, $(BUILD)/%.o, $(C_SRCS))
+		CPP_OBJS := $(patsubst $(SRC_DIR)/%.cpp, $(BUILD)/%.o, $(CPP_SRCS))
+		OBJS     := $(C_OBJS) $(CPP_OBJS)
+
+		.PHONY: all clean
 		all: $(OUT)
 
-		$(OUT): $(SRC)
+		$(OUT): $(OBJS)
 			mkdir -p $(dir $@)
-			$(CC) $(CFLAGS) $< -o $@
+			$(CC) $(CFLAGS) $^ -o $@
+
+		$(BUILD)/%.o: $(SRC_DIR)/%.c
+			mkdir -p $(dir $@)
+			$(CC) $(CFLAGS) -c $< -o $@
+
+		$(BUILD)/%.o: $(SRC_DIR)/%.cpp
+			mkdir -p $(dir $@)
+			$(CC) $(CFLAGS) -c $< -o $@
 
 		clean:
-			rm -rf build/
+			rm -rf $(BUILD)
     """
     )
     write_file(makefile, cmk)
@@ -78,7 +95,7 @@ def main():
         mkdir build && cd build
         cmake ..
         make
-        ./{prog}
+        .\\{prog}.exe
         ```
 
         ## Description
